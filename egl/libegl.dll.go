@@ -64,7 +64,7 @@ var (
 )
 
 func init() {
-	dll = windows.MustLoadDLL("libegl.dll")
+	dll = windows.MustLoadDLL("libEGL.dll")
 
 	//angle
 	procGetPlatformDisplayEXT = dll.MustFindProc("eglGetPlatformDisplayEXT")

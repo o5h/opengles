@@ -159,7 +159,7 @@ var (
 )
 
 func init() {
-	dll = windows.MustLoadDLL("libglesv2.dll")
+	dll = windows.MustLoadDLL("libGLESv2.dll")
 	procActiveTexture = dll.MustFindProc("glActiveTexture")
 	procAttachShader = dll.MustFindProc("glAttachShader")
 	procBindAttribLocation = dll.MustFindProc("glBindAttribLocation")
