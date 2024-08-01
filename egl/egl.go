@@ -6,6 +6,8 @@ type Display uintptr
 type Surface uintptr
 type Context uintptr
 type Config uintptr
+type NativeWindow uintptr
+type NativeDisplay uintptr
 
 const (
 	DONT_CARE = -1

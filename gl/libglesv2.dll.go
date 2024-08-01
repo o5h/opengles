@@ -305,33 +305,33 @@ func init() {
 
 }
 
-func ActiveTexture(texture Enum) {
+func ActiveTexture(texture uint32) {
 	procActiveTexture.Call(uintptr(texture))
 }
 
-func AttachShader(program UInt, shader UInt) {
+func AttachShader(program uint32, shader uint32) {
 	procAttachShader.Call(uintptr(program), uintptr(shader))
 }
 
-func BindAttribLocation(program UInt, index uint32, name string) {
+func BindAttribLocation(program uint32, index uint32, name string) {
 	cstr := unsafe.Pointer(C.CString(name))
 	defer C.free(cstr)
 	procBindAttribLocation.Call(uintptr(program), uintptr(index), uintptr(cstr))
 }
 
-func BindBuffer(target int, b UInt) {
+func BindBuffer(target int, b uint32) {
 	procBindBuffer.Call(uintptr(target), uintptr(b))
 }
 
-func BindFramebuffer(target int, b UInt) {
+func BindFramebuffer(target int, b uint32) {
 	procBindFramebuffer.Call(uintptr(target), uintptr(b))
 }
 
-func BindRenderbuffer(target int, b UInt) {
+func BindRenderbuffer(target int, b uint32) {
 	procBindRenderbuffer.Call(uintptr(target), uintptr(b))
 }
 
-func BindTexture(target int, texture UInt) {
+func BindTexture(target int, texture uint32) {
 	procBindTexture.Call(uintptr(target), uintptr(texture))
 }
 
@@ -379,19 +379,15 @@ func BlendFuncSeparate(
 		uintptr(dfactorAlpha))
 }
 
-func BufferData(target Enum, size int, data uintptr, usage Enum) {
+func BufferData(target uint32, size int, data unsafe.Pointer, usage uint32) {
 	procBufferData.Call(
 		uintptr(target),
 		uintptr(size),
-		data,
+		uintptr(data),
 		uintptr(usage))
 }
 
-func BufferSubData(
-	target int,
-	offset unsafe.Pointer, /*GLintptr*/
-	size int,
-	data unsafe.Pointer /*const void **/) {
+func BufferSubData(target int, offset int, size int, data unsafe.Pointer) {
 	procBufferSubData.Call(
 		uintptr(target),
 		uintptr(offset),
@@ -440,7 +436,7 @@ func ColorMask(
 		uintptr(alpha))
 }
 
-func CompileShader(shader UInt) {
+func CompileShader(shader uint32) {
 	procCompileShader.Call(uintptr(shader))
 }
 
@@ -526,73 +522,58 @@ func CopyTexSubImage2D(
 		uintptr(height))
 }
 
-func CreateProgram() UInt {
+func CreateProgram() uint32 {
 	r1, _, _ := procCreateProgram.Call()
-	return UInt(r1)
+	return uint32(r1)
 }
 
-func CreateShader(ty Enum) UInt {
+func CreateShader(ty uint32) uint32 {
 	r1, _, _ := procCreateShader.Call(uintptr(ty))
-	return UInt(r1)
+	return uint32(r1)
 }
 
 func CullFace(mode int) {
 	procCullFace.Call(uintptr(mode))
 }
 
-func DeleteBuffers(b []UInt) {
+func DeleteBuffers(b []uint32) {
 	procDeleteBuffers.Call(uintptr(len(b)), uintptr(unsafe.Pointer(&b[0])))
 }
 
-func DeleteBuffer(b UInt) {
+func DeleteBuffer(b uint32) {
 	procDeleteBuffers.Call(uintptr(1), uintptr(unsafe.Pointer(&b)))
 }
 
-func DeleteFramebuffers(n int, framebuffers *UInt) {
+func DeleteFramebuffers(n int, framebuffers *uint32) {
 	procDeleteFramebuffers.Call(uintptr(n), uintptr(unsafe.Pointer(framebuffers)))
 }
 
-func DeleteFramebuffer(b UInt) {
+func DeleteFramebuffer(b uint32) {
 	DeleteFramebuffers(1, &b)
 }
 
-func DeleteProgram(program UInt) {
+func DeleteProgram(program uint32) {
 	procDeleteProgram.Call(uintptr(program))
 }
 
-func DeleteRenderbuffers(n int, renderbuffers *UInt) {
+func DeleteRenderbuffers(n int, renderbuffers *uint32) {
 	procDeleteRenderbuffers.Call(uintptr(n), uintptr(unsafe.Pointer(renderbuffers)))
 }
 
-func DeleteRenderbuffer(b UInt) {
+func DeleteRenderbuffer(b uint32) {
 	DeleteRenderbuffers(1, &b)
 }
 
-func DeleteShader(shader UInt) {
+func DeleteShader(shader uint32) {
 	procDeleteShader.Call(uintptr(shader))
 }
 
-func DeleteTextures(
-	n int,
-	textures unsafe.Pointer /*const GLuint **/) {
-	procDeleteTextures.Call(
-		uintptr(n),
-		uintptr(textures))
-}
+func DeleteTextures(n int, t unsafe.Pointer) { procDeleteTextures.Call(uintptr(n), uintptr(t)) }
+func DeleteTexture(t uint32)                 { procDeleteTextures.Call(uintptr(1), uintptr(unsafe.Pointer(&t))) }
 
-func DepthFunc(fn int) {
-	procDepthFunc.Call(uintptr(fn))
-}
-
-func DepthMask(flag bool) {
-	procDepthMask.Call(uintptr(bool2uint8(flag)))
-}
-
-func DepthRangef(n float32, f float32) {
-	procDepthRangef.Call(
-		uintptr(n),
-		uintptr(f))
-}
+func DepthFunc(fn int)                 { procDepthFunc.Call(uintptr(fn)) }
+func DepthMask(flag bool)              { procDepthMask.Call(uintptr(bool2uint8(flag))) }
+func DepthRangef(n float32, f float32) { procDepthRangef.Call(uintptr(n), uintptr(f)) }
 
 func DetachShader(
 	program uint32,
@@ -620,7 +601,7 @@ func DrawArrays(
 		uintptr(count))
 }
 
-func DrawElements(mode Enum, count int, ty Enum, indices uintptr) {
+func DrawElements(mode uint32, count int, ty uint32, indices uintptr) {
 	procDrawElements.Call(
 		uintptr(mode),
 		uintptr(count),
@@ -644,7 +625,7 @@ func Flush() {
 	procFlush.Call()
 }
 
-func FramebufferRenderbuffer(target, attachment, renderbuffertarget int, renderbuffer UInt) {
+func FramebufferRenderbuffer(target, attachment, renderbuffertarget int, renderbuffer uint32) {
 	procFramebufferRenderbuffer.Call(
 		uintptr(target),
 		uintptr(attachment),
@@ -670,11 +651,11 @@ func FrontFace(mode int) {
 	procFrontFace.Call(uintptr(mode))
 }
 
-func GenBuffers(b []UInt) {
+func GenBuffers(b []uint32) {
 	procGenBuffers.Call(uintptr(len(b)), uintptr(unsafe.Pointer(&b[0])))
 }
 
-func GenBuffer() (b UInt) {
+func GenBuffer() (b uint32) {
 	procGenBuffers.Call(uintptr(1), uintptr(unsafe.Pointer(&b)))
 	return
 }
@@ -683,35 +664,35 @@ func GenerateMipmap(target int) {
 	procGenerateMipmap.Call(uintptr(target))
 }
 
-func GenFramebuffers(b []UInt) {
+func GenFramebuffers(b []uint32) {
 	procGenFramebuffers.Call(uintptr(len(b)), uintptr(unsafe.Pointer(&b[0])))
 }
 
-func GenFramebuffer() (b UInt) {
+func GenFramebuffer() (b uint32) {
 	procGenFramebuffers.Call(uintptr(1), uintptr(unsafe.Pointer(&b)))
 	return
 }
 
-func GenRenderbuffers(b []UInt) {
+func GenRenderbuffers(b []uint32) {
 	procGenRenderbuffers.Call(uintptr(len(b)), uintptr(unsafe.Pointer(&b[0])))
 }
 
-func GenRenderbuffer() (b UInt) {
+func GenRenderbuffer() (b uint32) {
 	procGenRenderbuffers.Call(1, uintptr(unsafe.Pointer(&b)))
 	return
 }
 
-func GenTextures(n int, textures *UInt) {
+func GenTextures(n int, textures *uint32) {
 	procGenTextures.Call(uintptr(n), uintptr(unsafe.Pointer(textures)))
 }
 
-func GenTexture() UInt {
-	var t UInt
+func GenTexture() uint32 {
+	var t uint32
 	procGenTextures.Call(uintptr(1), uintptr(unsafe.Pointer(&t)))
 	return t
 }
 
-func GetActiveAttrib(program UInt, index uint32) (string, int32, int) {
+func GetActiveAttrib(program uint32, index uint32) (string, int32, int) {
 	buf := make([]byte, 1024)
 	var length int
 	var size int32
@@ -727,7 +708,7 @@ func GetActiveAttrib(program UInt, index uint32) (string, int32, int) {
 	return goString(buf), int32(size), int(ty)
 }
 
-func GetActiveUniform(program UInt, i uint32) (string, int32, int) {
+func GetActiveUniform(program uint32, i uint32) (string, int32, int) {
 	buf := make([]byte, 1024)
 	var length int
 	var size int32
@@ -755,7 +736,7 @@ func GetAttachedShaders(
 		uintptr(shaders))
 }
 
-func GetAttribLocation(program UInt, name string) int32 {
+func GetAttribLocation(program uint32, name string) int32 {
 	cstr := unsafe.Pointer(C.CString(name))
 	defer C.free(cstr)
 	r1, _, _ := procGetAttribLocation.Call(uintptr(program), uintptr(cstr))
@@ -823,12 +804,12 @@ func GetIntegerv(
 		uintptr(data))
 }
 
-func GetProgramiv(program UInt, pname int) (i int32) {
+func GetProgramiv(program uint32, pname int) (i int32) {
 	procGetProgramiv.Call(uintptr(program), uintptr(pname), uintptr(unsafe.Pointer(&i)))
 	return
 }
 
-func GetProgramInfoLog(program UInt) string {
+func GetProgramInfoLog(program uint32) string {
 	maxLength := GetProgramiv(program, INFO_LOG_LENGTH)
 	if maxLength == 0 {
 		return ""
@@ -854,7 +835,7 @@ func GetRenderbufferParameteriv(
 		uintptr(params))
 }
 
-func GetShaderiv(shader UInt, pname int) (params int32) {
+func GetShaderiv(shader uint32, pname int) (params int32) {
 	procGetShaderiv.Call(
 		uintptr(shader),
 		uintptr(pname),
@@ -862,7 +843,7 @@ func GetShaderiv(shader UInt, pname int) (params int32) {
 	return
 }
 
-func GetShaderInfoLog(shader UInt) string {
+func GetShaderInfoLog(shader uint32) string {
 	maxLength := GetShaderiv(shader, INFO_LOG_LENGTH)
 
 	buf := make([]byte, maxLength)
@@ -901,7 +882,7 @@ func GetShaderSource(
 
 func GetString(name int) unsafe.Pointer /*const GLubyte **/ {
 	r1, _, _ := procGetString.Call(uintptr(name))
-	return unsafe.Pointer /*const GLubyte **/ (r1)
+	return unsafe.Pointer(r1)
 }
 
 func GetTexParameterfv(
@@ -944,7 +925,7 @@ func GetUniformiv(
 		uintptr(params))
 }
 
-func GetUniformLocation(program UInt, name string) int {
+func GetUniformLocation(program uint32, name string) int {
 	cstr := unsafe.Pointer(C.CString(name))
 	defer C.free(cstr)
 	r1, _, _ := procGetUniformLocation.Call(uintptr(program), uintptr(cstr))
@@ -985,7 +966,7 @@ func Hint(target int, mode int) {
 	procHint.Call(uintptr(target), uintptr(mode))
 }
 
-func IsBuffer(buffer UInt) bool {
+func IsBuffer(buffer uint32) bool {
 	r1, _, _ := procIsBuffer.Call(uintptr(buffer))
 	return r1 == TRUE
 }
@@ -995,12 +976,12 @@ func IsEnabled(cap int) bool {
 	return r1 == TRUE
 }
 
-func IsFramebuffer(framebuffer UInt) bool {
+func IsFramebuffer(framebuffer uint32) bool {
 	r1, _, _ := procIsFramebuffer.Call(uintptr(framebuffer))
 	return r1 == TRUE
 }
 
-func IsProgram(program UInt) bool {
+func IsProgram(program uint32) bool {
 	r1, _, _ := procIsProgram.Call(uintptr(program))
 	return r1 == TRUE
 }
@@ -1010,12 +991,12 @@ func IsRenderbuffer(renderbuffer uint32) int8 {
 	return int8(r1)
 }
 
-func IsShader(shader UInt) bool {
+func IsShader(shader uint32) bool {
 	r1, _, _ := procIsShader.Call(uintptr(shader))
 	return r1 != FALSE
 }
 
-func IsTexture(texture UInt) bool {
+func IsTexture(texture uint32) bool {
 	r1, _, _ := procIsTexture.Call(uintptr(texture))
 	return r1 == TRUE
 }
@@ -1024,7 +1005,7 @@ func LineWidth(width float32) {
 	procLineWidth.Call(uintptr(width))
 }
 
-func LinkProgram(program UInt) {
+func LinkProgram(program uint32) {
 	procLinkProgram.Call(uintptr(program))
 }
 
@@ -1105,7 +1086,7 @@ func ShaderBinary(
 		uintptr(length))
 }
 
-func ShaderSource(shader UInt, src string) {
+func ShaderSource(shader uint32, src string) {
 	cstr := unsafe.Pointer(C.CString(src))
 	ptr := C.malloc(C.size_t(unsafe.Sizeof((*int)(nil))))
 	*(*uintptr)(ptr) = uintptr(cstr)
@@ -1167,12 +1148,12 @@ func StencilOpSeparate(
 func TexImage2D(
 	target uint32,
 	level int,
-	internalFormat UInt,
+	internalFormat uint32,
 	width int,
 	height int,
 	border int,
-	format Enum,
-	ty Enum,
+	format uint32,
+	ty uint32,
 	data uintptr) {
 	procTexImage2D.Call(
 		uintptr(target),
@@ -1243,12 +1224,8 @@ func TexSubImage2D(
 		uintptr(pixels))
 }
 
-func Uniform1f(
-	location int,
-	v0 float32) {
-	procUniform1f.Call(
-		uintptr(location),
-		uintptr(v0))
+func Uniform1f(location int, v0 float32) {
+	procUniform1f.Call(uintptr(location), f2ptr(v0))
 }
 
 func Uniform1fv(
@@ -1432,11 +1409,11 @@ func UniformMatrix4fv(location int, count int, transpose bool, value uintptr) {
 		value)
 }
 
-func UseProgram(p UInt) {
+func UseProgram(p uint32) {
 	procUseProgram.Call(uintptr(p))
 }
 
-func ValidateProgram(p UInt) {
+func ValidateProgram(p uint32) {
 	procValidateProgram.Call(uintptr(p))
 }
 
@@ -1519,7 +1496,7 @@ func VertexAttrib4fv(
 func VertexAttribPointer(
 	index uint32,
 	size int,
-	ty int,
+	ty uint32,
 	normalized bool,
 	stride int,
 	pointer uintptr) {
@@ -1537,8 +1514,8 @@ func VertexAttribPointer(
 		uintptr(pointer))
 }
 
-func Viewport(x int, y int, width int, height int) {
-	procViewport.Call(uintptr(x), uintptr(y), uintptr(width), uintptr(height))
+func Viewport(x, y, w, h int32) {
+	procViewport.Call(uintptr(x), uintptr(y), uintptr(w), uintptr(h))
 }
 
 func bool2uint8(b bool) uint8 {

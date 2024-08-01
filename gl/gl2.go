@@ -1,8 +1,5 @@
 package gl
 
-type UInt uint32
-type Enum uint32
-
 const (
 	DEPTH_BUFFER_BIT                             = 0x00000100
 	STENCIL_BUFFER_BIT                           = 0x00000400

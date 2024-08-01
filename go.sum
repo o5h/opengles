@@ -1,4 +1,2 @@
-github.com/o5h/winapi v0.0.0-20230719195826-f52bd6ad109a h1:zUYLJp3kgDdGONBGxN6B50OI4Ca47xIMqU4SMkA8yqk=
-github.com/o5h/winapi v0.0.0-20230719195826-f52bd6ad109a/go.mod h1:d/MduDqVNV9aOsAz19EnJsLIUaOP2jZfv6si767sloE=
-golang.org/x/sys v0.10.0 h1:SqMFp9UcQJZa+pmYuAKjd9xq1f0j5rLcDIk0mj4qAsA=
-golang.org/x/sys v0.10.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.22.0 h1:RI27ohtqKCnwULzJLqkv897zojh5/DwS/ENaMzUOaWI=
+golang.org/x/sys v0.22.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
