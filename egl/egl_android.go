@@ -11,9 +11,6 @@ import (
 	"unsafe"
 )
 
-type NativeWindow uintptr
-type NativeDisplay uintptr
-
 func GetDisplay(ty NativeDisplay) Display {
 	return Display(C.eglGetDisplay((C.EGLNativeDisplayType)(ty)))
 }
